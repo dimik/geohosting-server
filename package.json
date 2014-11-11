@@ -1,0 +1,43 @@
+{
+  "name": "geohosting",
+  "version": "1.0.0",
+  "description": "Geohosting Server Application",
+  "keywords": [
+    "geo",
+    "geohosting",
+    "maps",
+    "geojson"
+  ],
+  "author": {
+    "name": "Dmitry Poklonskiy",
+    "email": "info@geohosting.pro",
+    "url": "http://www.openshift.com/"
+  },
+  "homepage": "http://geohosting.pro/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dimik/geohosting-server.git"
+  },
+  "engines": {
+    "node": ">= 0.6.0",
+    "npm": ">= 1.0.0"
+  },
+  "dependencies": {
+    "body-parser": "~1.6.5",
+    "express": "~4.8.5",
+    "hiredis": "~0.1.17",
+    "inherit": "~2.2.2",
+    "lodash": "^2.4.1",
+    "mongoose": "^3.8.17",
+    "nconf": "~0.6.9",
+    "redis": "~0.12.1",
+    "vow": "~0.4.7"
+  },
+  "devDependencies": {
+    "mocha": "~1.21.4",
+    "supertest": "~0.13.0",
+    "should": "~4.0.4"
+  },
+  "bundleDependencies": [],
+  "main": "server.js"
+}
