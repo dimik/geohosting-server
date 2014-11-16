@@ -1,7 +1,6 @@
 'use strict';
 
 var Feature = require(process.cwd() + '/storage/model/feature');
-var utils = require(process.cwd() + '/lib/utils');
 
 var express = require('express');
 var router = express.Router();
