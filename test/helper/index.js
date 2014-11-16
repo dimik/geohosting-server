@@ -16,8 +16,8 @@ exports.createFeature = function () {
       coordinates: [ _.random(-180, 180 - 1e-10, true), _.random(-85, 85, true) ]
     },
     properties: {
-      balloonContent: 'Содержимое балуна',
-      hintContent: 'Содержимое всплывающей подсказки'
+      balloonContent: 'The quick brown fox jumps over the lazy dog',
+      hintContent: 'The quick brown fox jumps over the lazy dog'
     }
   };
 };
