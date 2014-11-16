@@ -26,7 +26,14 @@ var server = app.listen(port, host, function () {
   logger.info(util.format('Node server started on %s:%d', host, port));
 });
 
-// Expressjs middleware for handling errors.
+/**
+ * Expressjs middleware for handling errors.
+ * @function
+ * @name errorHandler
+ * @param {Object} req Express.Request
+ * @param {Object} res Express.Response
+ * @param {Function} next Express Middleware callback
+ */
 function errorHandler(err, req, res, next) {
   logger.err(err);
   res.headersSent || res.status(500).jsonp({
@@ -42,7 +49,14 @@ function errorHandler(err, req, res, next) {
   // next(err);
 }
 
-// Expressjs middleware for handling uncaught exceptions with domain and worker restarting.
+/**
+ * Expressjs middleware for handling uncaught exceptions with domain and worker restarting.
+ * @function
+ * @name uncaughtExceptionHandler
+ * @param {Object} req Express.Request
+ * @param {Object} res Express.Response
+ * @param {Function} next Express Middleware callback
+ */
 function uncaughtExceptionHandler(req, res, next) {
   var d = domain.create();
 
