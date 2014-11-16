@@ -4,24 +4,12 @@ var should = require('should');
 var request = require('supertest');
 var url = require('url');
 var config = require('../config').get('server');
-var _ = require('lodash');
 var Feature = require('../storage/model/feature');
+var helper = require('./helper');
 var host = url.format(config);
 
 describe('Geohosting API', function () {
 
-  var url = '/api/v1/features';
-  var data = {
-    type: 'Feature',
-    geometry: {
-      type: 'Point',
-      coordinates: [ _.random(-180, 180 - 1e-10, true), _.random(-85, 85, true) ]
-    },
-    properties: {
-      balloonContent: 'Содержимое балуна',
-      hintContent: 'Содержимое всплывающей подсказки'
-    }
-  };
   var featureId;
 
   after(function (done) {
@@ -39,7 +27,7 @@ describe('Geohosting API', function () {
       request(host)
         .post(url)
         .set('ContentType', 'application/json')
-        .send(data)
+        .send(helper.createFeature())
         .expect("Content-Type", /json/)
         .expect(201)
         .end(function (err, res) {
