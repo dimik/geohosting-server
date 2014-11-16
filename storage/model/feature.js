@@ -1,6 +1,7 @@
 'use strict';
 
 var mongoose = require('mongoose');
+var ObjectId = mongoose.Types.ObjectId;
 var connection = require('..');
 var schema = require('../schema/feature');
 var GeoProjection = require('../../lib/projection');
@@ -24,6 +25,19 @@ schema.pre('save', function (next) {
   next();
 });
 
+schema.static('getById', function (id, cb) {
+  var query;
+
+  try {
+    query = { _id: ObjectId.createFromHexString(id.toString()) };
+  }
+  catch (err) {
+    query = { id: id };
+  }
+
+  return module.exports.findOne(query, cb);
+});
+
 schema.static('findInTiles', function (tiles, options, cb) {
   var quadKeys = tiles.map(function (tile) {
     return tileSystem.tileNumberToQuadKey(tile, options.zoom);
@@ -31,13 +45,79 @@ schema.static('findInTiles', function (tiles, options, cb) {
   var query = { _quadKey: { $regex: '^(' + quadKeys.join('|') + ')' } };
 
   if(options.clusterize) {
+    // for version 2.6
     return clusterize.call(this, query, options, cb);
+    // for version below than 2.6
     // return clusterizeMapReduce.call(this, query, options, cb);
   }
 
   return this.find(query, cb);
 });
 
+/**
+ * Clusterize using MongoDB Aggregation pipeline (for version 2.6 and above).
+ * @function
+ * @name clusterize
+ * @param {Object} query MongoDB query
+ * @param {Object} options
+ * @param {Function} cb Request callback
+ * @returns {Promise}
+ */
+function clusterize(query, options, cb) {
+  var gridSize = options.gridSize || 256;
+  var zoom = options.zoom;
+  var levels = zoom + 256 / gridSize;
+
+  return this.aggregate({
+    $match: query
+  }, {
+    $group: {
+      _id: { $substr: [ '$_quadKey', 0, levels ] },
+      ids: { $push: '$_id' },
+      features: { $push: '$$ROOT' },
+      lng: { $avg: '$_lng' },
+      lat: { $avg: '$_lat' },
+      north: { $max: '$_lat' },
+      south: { $min: '$_lat' },
+      east: { $max: '$_lng' },
+      west: { $min: '$_lng' },
+      count: { $sum: 1 }
+    }
+  }, function (err, data) {
+    if(err) {
+      return cb(err);
+    }
+
+    cb(null, data.map(function (it) {
+      return it.count > 1? {
+        id: it._id,
+        // type: 'Feature',
+        type: 'Cluster',
+        bbox: [ [ it.west, it.south ], [ it.east, it.north ] ],
+        geometry: {
+          type: 'Point',
+          coordinates: [ it.lng, it.lat ]
+        },
+        number: it.count,
+        properties: {
+          ids: it.ids,
+          iconContent: it.count
+        }
+        // return Feature model instance.
+      } : new module.exports(it.features[0]);
+    }));
+  });
+}
+
+/**
+ * Clusterize using MongoDB MapReduce (for earlier versions than 2.6)
+ * @function
+ * @name clusterize
+ * @param {Object} query MongoDB query
+ * @param {Object} options
+ * @param {Function} cb Request callback
+ * @returns {Promise}
+ */
 function clusterizeMapReduce(query, options, cb) {
   var gridSize = options.gridSize || 256;
   var zoom = options.zoom;
@@ -101,58 +181,6 @@ function clusterizeMapReduce(query, options, cb) {
 
     cb(null, results.map(function (it) {
       return it.value;
-    }));
-  });
-}
-
-
-function clusterize(query, options, cb) {
-  var gridSize = options.gridSize || 256;
-  var zoom = options.zoom;
-  var levels = zoom + 256 / gridSize;
-
-  console.log(zoom, levels, query)
-
-  return this.aggregate({
-    $match: query
-  }, {
-    $group: {
-      _id: { $substr: [ '$_quadKey', 0, levels ] },
-      ids: { $push: '$_id' },
-      features: { $push: '$$ROOT' },
-      lng: { $avg: '$_lng' },
-      lat: { $avg: '$_lat' },
-      north: { $max: '$_lat' },
-      south: { $min: '$_lat' },
-      east: { $max: '$_lng' },
-      west: { $min: '$_lng' },
-      count: { $sum: 1 }
-    }
-  }, function (err, data) {
-    if(err) {
-      return cb(err);
-    }
-
-    cb(null, data.map(function (it) {
-      return it.count > 1? {
-        id: it._id,
-        // type: 'Feature',
-        type: 'Cluster',
-        // bbox: [ it.west, it.south, it.east, it.north ],
-        bbox: [ [ it.west, it.south ], [ it.east, it.north ] ],
-        geometry: {
-          // type: 'MultiPoint',
-          // coordinates: [ [ it.lng, it.lat ] ]
-          type: 'Point',
-          coordinates: [ it.lng, it.lat ]
-        },
-        number: it.count,
-        properties: {
-          ids: it.ids,
-          iconContent: it.count
-        }
-        // return Feature model instance.
-      } : new module.exports(it.features[0]);
     }));
   });
 }

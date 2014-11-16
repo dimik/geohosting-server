@@ -10,7 +10,7 @@ var tileSystem = new TileSystem({
 describe('TileSystem', function () {
   describe('#quadKeyToTileNumber()', function () {
     it('should return tile number from QuadTree Key', function (done) {
-      var result = tileSystem.quadKeyToTileNumber('213');
+      var result = tileSystem.quadKeyToTileNumber('0213');
 
       result.should.be.eql([3, 5]);
       done();
@@ -21,7 +21,7 @@ describe('TileSystem', function () {
       var zoom = 3;
       var result = tileSystem.tileNumberToQuadKey([3, 5], zoom);
 
-      result.should.be.eql('213');
+      result.should.be.eql('0213');
       done();
     });
   });
@@ -30,7 +30,7 @@ describe('TileSystem', function () {
       var coordinates = [37.573856, 55.751574];
       var result = tileSystem.coordinatesToQuadKey(coordinates);
 
-      result.should.be.eql('12031010121110022221130');
+      result.should.be.eql('012031010121110022221130');
       done();
     });
   });
