@@ -30,14 +30,14 @@ var server = app.listen(port, host, function () {
  * Expressjs middleware for handling errors.
  * @function
  * @name errorHandler
- * @param {Object} req Express.Request
- * @param {Object} res Express.Response
+ * @param {express.Request} req
+ * @param {express.Response} res
  * @param {Function} next Express Middleware callback
  */
 function errorHandler(err, req, res, next) {
   logger.err(err);
   res.headersSent || res.status(500).jsonp({
-  // res.headersSent || res.status(400).json({
+  // res.headersSent || res.status(500).json({
     // errors: {
     data: null,
     error: {
@@ -53,8 +53,8 @@ function errorHandler(err, req, res, next) {
  * Expressjs middleware for handling uncaught exceptions with domain and worker restarting.
  * @function
  * @name uncaughtExceptionHandler
- * @param {Object} req Express.Request
- * @param {Object} res Express.Response
+ * @param {express.Request} req
+ * @param {express.Response} res
  * @param {Function} next Express Middleware callback
  */
 function uncaughtExceptionHandler(req, res, next) {

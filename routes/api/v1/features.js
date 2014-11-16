@@ -16,6 +16,10 @@ router.route('/:feature')
   .put(updateFeature)
   .delete(removeFeature);
 
+/**
+ * Express.Router param middleware.
+ * Gets feature by Id.
+ */
 router.param('feature', function (req, res, next, id) {
   Feature.findById(id).exec()
     .then(function (feature) {
@@ -28,15 +32,37 @@ router.param('feature', function (req, res, next, id) {
 });
 
 /**
- * Find features
+ * Gets feature
+ * @function
+ * @name getFeature
+ * @param {express.Request} req
+ * @param {express.Response} res
+ * @param {Function} next Express middleware callback
+ */
+function getFeature(req, res, next) {
+  res.status(200).json(req.feature);
+}
+
+/**
+ * Finds features
+ * @function
+ * @name findFeatures
+ * @param {express.Request} req
+ * @param {express.Response} res
+ * @param {Function} next Express middleware callback
  */
 function findFeatures(req, res, next) {
 }
 
 /**
- * Add feauture
+ * Creates feauture
+ * @function
+ * @name createFeature
+ * @param {express.Request} req
+ * @param {express.Response} res
+ * @param {Function} next Express middleware callback
  */
-function addFeature(req, res, next) {
+function createFeature(req, res, next) {
   var feature = new Feature(req.body);
 
   feature.save(function (err, feature) {
@@ -49,7 +75,11 @@ function addFeature(req, res, next) {
 }
 
 /**
- * Update feature
+ * Updates feature
+ * @name updateFeature
+ * @param {express.Request} req
+ * @param {express.Response} res
+ * @param {Function} next Express middleware callback
  */
 function updateFeature(req, res, next) {
   var feature = req.feature;
@@ -65,7 +95,11 @@ function updateFeature(req, res, next) {
 }
 
 /**
- * Remove feature
+ * Removes feature
+ * @name removeFeature
+ * @param {express.Request} req
+ * @param {express.Response} res
+ * @param {Function} next Express middleware callback
  */
 function removeFeature(req, res, next) {
   var feature = req.feature;
