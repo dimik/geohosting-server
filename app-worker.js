@@ -64,16 +64,7 @@ function uncaughtExceptionHandler(req, res, next) {
     worker.disconnect();
     // Try to send an error to the request that triggered the problem.
     try {
-      res.headersSent || res.status(500).json({
-      // res.headersSent || res.status(500).json({
-        // errors: {
-        data: null,
-        error: {
-          status: 500,
-          title: 'Internal Error',
-          detail: err.stack || err.toString()
-        }
-      });
+      errorHandler(err, req, res, next);
     }
     catch (err) {
       // Oh well, not much we can do at this point.
