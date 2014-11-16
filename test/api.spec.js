@@ -22,8 +22,8 @@ describe('Geohosting API', function () {
     });
   });
 
-  describe('#addFeature', function () {
-    it('should add feature', function (done) {
+  describe('#createFeature', function () {
+    it('should create feature', function (done) {
       request(host)
         .post(url)
         .set('ContentType', 'application/json')

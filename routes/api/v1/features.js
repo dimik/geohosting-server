@@ -9,7 +9,7 @@ module.exports = router;
 
 router.route('/')
   .get(findFeatures)
-  .post(addFeature);
+  .post(createFeature);
 
 router.route('/:feature')
   // .get(getFeature)
