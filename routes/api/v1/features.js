@@ -12,7 +12,7 @@ router.route('/')
   .post(createFeature);
 
 router.route('/:feature')
-  // .get(getFeature)
+  .get(getFeature)
   .put(updateFeature)
   .delete(removeFeature);
 

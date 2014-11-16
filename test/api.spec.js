@@ -47,4 +47,28 @@ describe('Geohosting API', function () {
     });
   });
 
+  describe('#getFeature', function () {
+    it('should get feature data', function (done) {
+      request(host)
+        .get(url + '/' + featureId)
+        .set('ContentType', 'application/json')
+        .expect("Content-Type", /json/)
+        .expect(200)
+        .end(function (err, res) {
+          var result = JSON.parse(res.text);
+
+          result.should.have.properties(
+            'id',
+            'type',
+            'geometry',
+            'properties'
+          );
+
+          result.id.should.be.eql(featureId);
+
+          done(err);
+        });
+    });
+  });
+
 });
