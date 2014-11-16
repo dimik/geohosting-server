@@ -29,13 +29,13 @@ var server = app.listen(port, host, function () {
 // Expressjs middleware for handling errors.
 function errorHandler(err, req, res, next) {
   logger.err(err);
-  res.headersSent || res.status(400).jsonp({
+  res.headersSent || res.status(500).jsonp({
   // res.headersSent || res.status(400).json({
     // errors: {
     data: null,
     error: {
-      status: 400,
-      title: 'Bad Request',
+      status: 500,
+      title: 'Internal Error',
       detail: err.stack || err.toString()
     }
   });
