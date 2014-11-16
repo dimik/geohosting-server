@@ -6,10 +6,10 @@ var url = require('url');
 var config = require('../config').get('server');
 var _ = require('lodash');
 var Feature = require('../storage/model/feature');
+var host = url.format(config);
 
 describe('Geohosting API', function () {
 
-  var host = url.format(config);
   var url = '/api/v1/features';
   var data = {
     type: 'Feature',
