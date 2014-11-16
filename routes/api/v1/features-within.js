@@ -1,7 +1,7 @@
 'use strict';
 
+var _ = require('lodash');
 var Feature = require('../../../storage/model/feature');
-var utils = require('../../../lib/utils');
 
 var express = require('express');
 var router = express.Router();
@@ -32,8 +32,8 @@ function findFeaturesWithinBounds(req, res, next) {
  */
 function findFeaturesWithinTiles(req, res, next) {
   var tileBounds = req.query.bbox.split(',').map(Number);
-  var xRange = utils.range(tileBounds[0], tileBounds[2] + 1);
-  var yRange = utils.range(tileBounds[1], tileBounds[3] + 1);
+  var xRange = _.range(tileBounds[0], tileBounds[2] + 1);
+  var yRange = _.range(tileBounds[1], tileBounds[3] + 1);
   var zoom = Number(req.query.zoom);
   var clusterize = req.query.clusterize;
   var options = {
@@ -41,9 +41,9 @@ function findFeaturesWithinTiles(req, res, next) {
     gridSize: 128,
     clusterize: clusterize === 'true' || clusterize === '1'
   };
-  var tiles = Array.prototype.concat.apply([], xRange.map(function (x) {
+  var tiles = _.flatten(xRange.map(function (x) {
     return yRange.map(function (y) { return [x, y]; });
-  }));
+  }), true);
 
   Feature.findInTiles(tiles, options, function (err, data) {
     if(err) {
