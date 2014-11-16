@@ -26,23 +26,37 @@ var server = app.listen(port, host, function () {
   logger.info(util.format('Node server started on %s:%d', host, port));
 });
 
-// Expressjs middleware for handling errors.
+/**
+ * Expressjs middleware for handling errors.
+ * @function
+ * @name errorHandler
+ * @param {Object} req Express.Request
+ * @param {Object} res Express.Response
+ * @param {Function} next Express Middleware callback
+ */
 function errorHandler(err, req, res, next) {
   logger.err(err);
-  res.headersSent || res.status(400).jsonp({
+  res.headersSent || res.status(500).jsonp({
   // res.headersSent || res.status(400).json({
     // errors: {
     data: null,
     error: {
-      status: 400,
-      title: 'Bad Request',
+      status: 500,
+      title: 'Internal Error',
       detail: err.stack || err.toString()
     }
   });
   // next(err);
 }
 
-// Expressjs middleware for handling uncaught exceptions with domain and worker restarting.
+/**
+ * Expressjs middleware for handling uncaught exceptions with domain and worker restarting.
+ * @function
+ * @name uncaughtExceptionHandler
+ * @param {Object} req Express.Request
+ * @param {Object} res Express.Response
+ * @param {Function} next Express Middleware callback
+ */
 function uncaughtExceptionHandler(req, res, next) {
   var d = domain.create();
 
@@ -64,16 +78,7 @@ function uncaughtExceptionHandler(req, res, next) {
     worker.disconnect();
     // Try to send an error to the request that triggered the problem.
     try {
-      res.headersSent || res.status(500).json({
-      // res.headersSent || res.status(500).json({
-        // errors: {
-        data: null,
-        error: {
-          status: 500,
-          title: 'Internal Error',
-          detail: err.stack || err.toString()
-        }
-      });
+      errorHandler(err, req, res, next);
     }
     catch (err) {
       // Oh well, not much we can do at this point.
