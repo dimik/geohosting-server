@@ -2,6 +2,12 @@
 
 var _ = require('lodash');
 
+/**
+ * Creates GeoJSON Feature type Point.
+ * @function
+ * @name createFeature
+ * @returns {Object}
+ */
 exports.createFeature = function () {
   return {
     type: 'Feature',
