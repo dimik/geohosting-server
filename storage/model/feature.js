@@ -1,6 +1,7 @@
 'use strict';
 
 var mongoose = require('mongoose');
+var ObjectId = mongoose.Types.ObjectId;
 var connection = require('..');
 var schema = require('../schema/feature');
 var GeoProjection = require('../../lib/projection');
@@ -22,6 +23,19 @@ schema.pre('save', function (next) {
     this._lat = coords[1];
   }
   next();
+});
+
+schema.static('getById', function (id, cb) {
+  var query;
+
+  try {
+    query = { _id: ObjectId.createFromHexString(id.toString()) };
+  }
+  catch (err) {
+    query = { id: id };
+  }
+
+  return module.exports.findOne(query, cb);
 });
 
 schema.static('findInTiles', function (tiles, options, cb) {

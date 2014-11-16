@@ -21,7 +21,7 @@ router.route('/:feature')
  * Gets feature by Id.
  */
 router.param('feature', function (req, res, next, id) {
-  Feature.findById(id).exec()
+  Feature.getById(id).exec()
     .then(function (feature) {
       if(!feature) {
         return next({
