@@ -36,16 +36,20 @@ var server = app.listen(port, host, function () {
  */
 function errorHandler(err, req, res, next) {
   logger.err(err);
-  res.headersSent || res.status(500).jsonp({
-  // res.headersSent || res.status(500).json({
-    // errors: {
-    data: null,
-    error: {
-      status: 500,
-      title: 'Internal Error',
-      detail: err.stack || err.toString()
-    }
-  });
+
+  var status = Number(err.status) || 500;
+  var message = err instanceof Error? {
+    status: 500,
+    title: 'Internal Error',
+    detail: err.stack || err.toString()
+  } : err;
+
+  if(!res.headersSent) {
+    res.status(status).jsonp({
+      data: null,
+      error: message
+    });
+  }
   // next(err);
 }
 

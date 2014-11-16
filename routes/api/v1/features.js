@@ -24,7 +24,11 @@ router.param('feature', function (req, res, next, id) {
   Feature.findById(id).exec()
     .then(function (feature) {
       if(!feature) {
-        return next(new Feature.NotFoundError());
+        return next({
+          status: 400,
+          title: 'Bad Request',
+          detail: 'Feature not found'
+        });
       }
       req.feature = feature;
       next();
