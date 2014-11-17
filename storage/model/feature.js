@@ -73,8 +73,9 @@ function clusterize(query, options, cb) {
   }, {
     $group: {
       _id: { $substr: [ '$_quadKey', 0, levels ] },
-      ids: { $push: '$_id' },
-      features: { $push: '$$ROOT' },
+      // ids: { $push: '$_id' },
+      // features: { $push: '$$ROOT' },
+      feature: { $first: '$$ROOT' },
       lng: { $avg: '$_lng' },
       lat: { $avg: '$_lat' },
       north: { $max: '$_lat' },
@@ -87,11 +88,9 @@ function clusterize(query, options, cb) {
     if(err) {
       return cb(err);
     }
-
     cb(null, data.map(function (it) {
       return it.count > 1? {
         id: it._id,
-        // type: 'Feature',
         type: 'Cluster',
         bbox: [ [ it.west, it.south ], [ it.east, it.north ] ],
         geometry: {
@@ -100,11 +99,11 @@ function clusterize(query, options, cb) {
         },
         number: it.count,
         properties: {
-          ids: it.ids,
+          // ids: it.ids,
           iconContent: it.count
         }
         // return Feature model instance.
-      } : new module.exports(it.features[0]);
+      } : new module.exports(it.feature);
     }));
   });
 }
