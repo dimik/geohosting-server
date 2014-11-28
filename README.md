@@ -98,7 +98,7 @@ PUT /api/v1/features/1
 ```json
 {
   "properties": {
-    "balloonContent": "New content of Placemark Balloon'
+    "balloonContent": "New content of Placemark Balloon"
   }
 }
 ```
