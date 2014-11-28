@@ -4,7 +4,7 @@ var should = require('should');
 var TileSystem = require('../lib/tile-system');
 var projection = require('../lib/projection');
 var tileSystem = new TileSystem({
-  projection: projection.create('wgs84Merkator')
+  projection: projection.create('wgs84Mercator')
 });
 
 describe('TileSystem', function () {

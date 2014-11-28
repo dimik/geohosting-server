@@ -36,6 +36,27 @@ Getting Started
     mocha test
 ```
 
+Upload data to MongoDB
+---------------------
+
+Use Feature model to upload geospatial data to MongoDB on server side.
+
+Test helper [saveFeatures](https://github.com/dimik/geohosting-server/blob/master/test/helper/index.js#L35) method shows an example how to do it.
+
+```javascript
+var helper = require('./test/helper');
+
+// Upload 1 million Features to MongoDB
+helper.saveFeatures(1000000)
+  .then(function (res) {
+    console.log(res);
+  }, function (err) {
+    console.log(err);
+  }, function (stat) {
+    console.log(stat);
+  });
+```
+
 API Examples
 ------------
 
@@ -77,7 +98,7 @@ PUT /api/v1/features/1
 ```json
 {
   "properties": {
-    "balloonContent": "New content of Placemark Balloon'
+    "balloonContent": "New content of Placemark Balloon"
   }
 }
 ```

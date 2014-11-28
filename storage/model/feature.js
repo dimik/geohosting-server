@@ -7,7 +7,7 @@ var schema = require('../schema/feature');
 var GeoProjection = require('../../lib/projection');
 var TileSystem = require('../../lib/tile-system');
 var tileSystem = new TileSystem({
-  projection: GeoProjection.create('wgs84Merkator')
+  projection: GeoProjection.create('wgs84Mercator')
 });
 
 /**
