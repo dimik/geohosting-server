@@ -41,9 +41,10 @@ function findFeaturesWithinTiles(req, res, next) {
     gridSize: 128,
     clusterize: clusterize === 'true' || clusterize === '1'
   };
-  var tiles = _.flatten(xRange.map(function (x) {
+
+  var tiles = xRange.map(function (x) {
     return yRange.map(function (y) { return [x, y]; });
-  }), true);
+  });
 
   Feature.findInTiles(tiles, options, function (err, data) {
     if(err) {
