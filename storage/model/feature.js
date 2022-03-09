@@ -68,7 +68,7 @@ function clusterize(query, options, cb) {
   var zoom = options.zoom;
   var levels = zoom + 256 / gridSize;
 
-  return this.aggregate({
+  return this.aggregate([{
     $match: query
   }, {
     $group: {
@@ -84,7 +84,7 @@ function clusterize(query, options, cb) {
       west: { $min: '$_lng' },
       count: { $sum: 1 }
     }
-  }, function (err, data) {
+  }], function (err, data) {
     if(err) {
       return cb(err);
     }
